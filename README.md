@@ -1,4 +1,4 @@
-Setup: 
+# Setup: 
 
 In order to run this bot, you'll need the following:
 
@@ -30,7 +30,7 @@ Pull this repository, and make the following modifications to the server.py file
 
 Open a second terminal, navigate to the /src folder for this project, and run the following command: "uvicorn server:app --reload --port 5050". This will start up a FastAPI server.
 
-Run:
+# Run:
 
 Once you've done all the above, open a third terminal window also in the /src folder and simply execute "python run.py"
 
