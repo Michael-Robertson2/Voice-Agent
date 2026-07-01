@@ -1,0 +1,56 @@
+[2026-07-01T00:14:36.849+00:00] receptionist: Recorded for quality and training purposes.
+[2026-07-01T00:14:42.689+00:00] patient: 
+[2026-07-01T00:14:42.801+00:00] receptionist: Thanks for calling Pivot Point Orthopaedics.
+[2026-07-01T00:14:45.328+00:00] patient: 
+[2026-07-01T00:14:45.334+00:00] receptionist: Part of Pretty Good AI.
+[2026-07-01T00:14:46.941+00:00] patient: 
+[2026-07-01T00:14:47.275+00:00] receptionist: Am I speaking with Alex?
+[2026-07-01T00:14:47.935+00:00] patient: Hi there! I’m just a patient calling in—are you Alex, the receptionist?
+[2026-07-01T00:14:56.322+00:00] receptionist: I'm not Alex.
+[2026-07-01T00:14:57.137+00:00] patient: 
+[2026-07-01T00:14:57.243+00:00] receptionist: Or the receptionist. I'm the voice assistant for Pivot Point Orthopaedics.
+[2026-07-01T00:15:01.491+00:00] patient: 
+[2026-07-01T00:15:02.262+00:00] receptionist: How can I help you today?
+[2026-07-01T00:15:03.138+00:00] patient: Great, thank you! I’d like to schedule an appointment for a knee issue. What’s your earliest availability?
+[2026-07-01T00:15:12.322+00:00] receptionist: Can you please provide your full name and date of birth?
+[2026-07-01T00:15:14.606+00:00] patient: Sure! My name is Jordan Miller, and my date of birth is June 18th, 1987.
+[2026-07-01T00:15:26.000+00:00] receptionist: Just to confirm, I have your name as Jordan Miller.
+[2026-07-01T00:15:28.856+00:00] patient: 
+[2026-07-01T00:15:29.081+00:00] receptionist: And your date of birth as June eighteenth nineteen eighty seven.
+[2026-07-01T00:15:32.707+00:00] patient: 
+[2026-07-01T00:15:33.298+00:00] receptionist: Is that correct?
+[2026-07-01T00:15:33.967+00:00] patient: 
+[2026-07-01T00:15:34.357+00:00] receptionist: If so, could you please spell your first and last name for me?
+[2026-07-01T00:15:36.954+00:00] patient: Yes, that’s correct. My first name is spelled: J-O-R-D-A-N My last name is spelled: M-I-L-L-E-R
+[2026-07-01T00:15:46.624+00:00] receptionist: Thanks.
+[2026-07-01T00:15:46.786+00:00] patient: 
+[2026-07-01T00:15:46.835+00:00] receptionist: You please spell your last name, Miller?
+[2026-07-01T00:15:48.544+00:00] patient: Of course! My last name is spelled:
+[2026-07-01T00:15:51.695+00:00] receptionist: Could you please spell your last name, Miller?
+[2026-07-01T00:15:53.439+00:00] patient: Sure! My last name is spelled: M-I-L-L-E-R.
+[2026-07-01T00:15:57.178+00:00] receptionist: Go ahead and spell your last name, Miller, please.
+[2026-07-01T00:15:58.772+00:00] patient: Certainly! My last name is spelled: M-I-L-L-E-R.
+[2026-07-01T00:16:02.758+00:00] receptionist: Please spell your last name, Miller.
+[2026-07-01T00:16:04.125+00:00] patient: Absolutely! My last name is spelled: M-I-L-L-E-R.
+[2026-07-01T00:16:12.661+00:00] receptionist: Please confirm your date of birth for me.
+[2026-07-01T00:16:14.314+00:00] patient: My date of birth is June 18th, 1987.
+[2026-07-01T00:16:22.521+00:00] receptionist: I have your phone number as six six nine
+[2026-07-01T00:16:24.409+00:00] patient: 
+[2026-07-01T00:16:25.175+00:00] receptionist: three three six
+[2026-07-01T00:16:25.450+00:00] patient: 
+[2026-07-01T00:16:26.136+00:00] receptionist: five seven two nine.
+[2026-07-01T00:16:27.397+00:00] patient: 
+[2026-07-01T00:16:27.917+00:00] receptionist: And your date of birth is June eighteenth nineteen eighty seven.
+[2026-07-01T00:16:31.108+00:00] patient: 
+[2026-07-01T00:16:31.541+00:00] receptionist: Is that correct?
+[2026-07-01T00:16:32.228+00:00] patient: Yes, that's correct—my phone number is 669-336-5729, and my date of birth is June 18, 1987.
+[2026-07-01T00:16:47.851+00:00] receptionist: I can't proceed further right now, but I can make sure our clinic's support team follows up with you. Please hold while I document your request.
+[2026-07-01T00:16:54.696+00:00] patient: 
+[2026-07-01T00:16:55.545+00:00] receptionist: Connecting you to a representative.
+[2026-07-01T00:16:57.129+00:00] patient: 
+[2026-07-01T00:16:57.673+00:00] receptionist: Please wait.
+[2026-07-01T00:16:58.346+00:00] patient: 
+[2026-07-01T00:16:59.770+00:00] receptionist: Hello. You've reached the Pretty Good AI test line.
+[2026-07-01T00:17:02.701+00:00] patient: 
+[2026-07-01T00:17:02.849+00:00] receptionist: Goodbye.
+[2026-07-01T00:17:06.345+00:00] patient: Thank you for your help. Goodbye!

@@ -1,0 +1,61 @@
+[2026-06-30T23:33:32.395+00:00] user: Recorded for quality and training purposes.
+[2026-06-30T23:33:36.708+00:00] assistant: 
+[2026-06-30T23:33:36.718+00:00] user: Thank you for calling Pivot Point Orthopedics.
+[2026-06-30T23:33:41.750+00:00] assistant: 
+[2026-06-30T23:33:42.259+00:00] user: Would you like to create a demo patient profile?
+[2026-06-30T23:33:44.441+00:00] assistant: 
+[2026-06-30T23:33:44.735+00:00] user: I just need your first and last name to get started.
+[2026-06-30T23:33:47.304+00:00] assistant: Sure! My name is Alex Johnson.
+[2026-06-30T23:33:55.398+00:00] user: Your patient profile is set up and your date of birth is July fourth two thousand for demo purposes.
+[2026-06-30T23:34:00.702+00:00] assistant: 
+[2026-06-30T23:34:01.106+00:00] user: How may I help you today?
+[2026-06-30T23:34:02.217+00:00] assistant: Hi, I’d like to schedule an appointment. What is your earliest availability?
+[2026-06-30T23:34:15.022+00:00] user: I can help with that. Can you tell me the reason for your visit?
+[2026-06-30T23:34:18.069+00:00] assistant: 
+[2026-06-30T23:34:18.482+00:00] user: For example, is this for a routine checkup?
+[2026-06-30T23:34:20.795+00:00] assistant: 
+[2026-06-30T23:34:21.271+00:00] user: A new patient consultation,
+[2026-06-30T23:34:22.920+00:00] assistant: 
+[2026-06-30T23:34:23.144+00:00] user: an urgent concern,
+[2026-06-30T23:34:24.322+00:00] assistant: 
+[2026-06-30T23:34:24.623+00:00] user: or something else?
+[2026-06-30T23:34:25.374+00:00] assistant: This would be a new patient consultation for knee pain that’s been bothering me for a few weeks.
+[2026-06-30T23:34:36.996+00:00] user: For sharing that. Do you have a specific provider you'd like to see?
+[2026-06-30T23:34:40.713+00:00] assistant: 
+[2026-06-30T23:34:40.899+00:00] user: Or are you open to the first available?
+[2026-06-30T23:34:42.920+00:00] assistant: I don’t have a specific provider in mind—I’m open to seeing the first available.
+[2026-06-30T23:34:52.997+00:00] user: There are no openings for a new patient consultation in the next
+[2026-06-30T23:34:56.585+00:00] assistant: 
+[2026-06-30T23:34:56.618+00:00] user: week. Would you like to look for the next available appointment after July seventh?
+[2026-06-30T23:35:00.731+00:00] assistant: 
+[2026-06-30T23:35:01.138+00:00] user: Or do you have a specific date range in mind?
+[2026-06-30T23:35:03.621+00:00] assistant: I'm flexible—please go ahead and look for the next available appointment after July seventh.
+[2026-06-30T23:35:13.218+00:00] user: The earliest available appointment is Thursday, July ninth at three PM.
+[2026-06-30T23:35:17.520+00:00] assistant: 
+[2026-06-30T23:35:17.615+00:00] user: With Dugie Hauser,
+[2026-06-30T23:35:18.934+00:00] assistant: 
+[2026-06-30T23:35:19.215+00:00] user: Would you like to book this slot?
+[2026-06-30T23:35:20.818+00:00] assistant: 
+[2026-06-30T23:35:21.096+00:00] user: Or would you like to hear about other options?
+[2026-06-30T23:35:23.149+00:00] assistant: Thursday, July 9th at 3 PM works for me—please book that slot with Dugie Hauser. Thank you!
+[2026-06-30T23:35:33.220+00:00] user: Your appointment is set for Thursday, July ninth,
+[2026-06-30T23:35:35.987+00:00] assistant: 
+[2026-06-30T23:35:36.033+00:00] user: at three PM with Judy Hauser at Pivot Point Orthopedics.
+[2026-06-30T23:35:39.842+00:00] assistant: 
+[2026-06-30T23:35:40.298+00:00] user: Please bring your photo ID
+[2026-06-30T23:35:41.929+00:00] assistant: 
+[2026-06-30T23:35:41.978+00:00] user: insurance card,
+[2026-06-30T23:35:43.003+00:00] assistant: 
+[2026-06-30T23:35:43.274+00:00] user: a list of current medications, and any imaging discs if you have them.
+[2026-06-30T23:35:46.775+00:00] assistant: 
+[2026-06-30T23:35:47.222+00:00] user: Is there anything else I can help you with today?
+[2026-06-30T23:35:49.457+00:00] assistant: Thank you! Just to clarify, is the provider’s name Dugie Hauser or Judy Hauser? Also, will I need to fill out any forms before my visit, or can that be done when I arrive?
+[2026-06-30T23:36:02.729+00:00] user: The provider's name is Judy Hauser.
+[2026-06-30T23:36:04.485+00:00] assistant: 
+[2026-06-30T23:36:04.831+00:00] user: You can fill out any necessary forms when you arrive for your appointment.
+[2026-06-30T23:36:08.610+00:00] assistant: 
+[2026-06-30T23:36:09.038+00:00] user: If you have more questions or need anything else, just let me know.
+[2026-06-30T23:36:14.667+00:00] assistant: Thank you for clarifying! That’s all I need for now. I appreciate your help—have a great day!
+[2026-06-30T23:36:22.893+00:00] user: You too.
+[2026-06-30T23:36:23.402+00:00] assistant: 
+[2026-06-30T23:36:23.623+00:00] user: Take care.

@@ -1,0 +1,210 @@
+# Receptionist System QA Report
+
+## Summary
+
+The call completed a basic intake flow but exposed several significant issues around identity verification, appointment lookup consistency, call transfer behavior, interruption handling, and appointment scheduling completeness. The most serious issue is that the system claimed the caller already had an appointment but then said it could not access the appointment details, leading to confusion and requiring a transfer that failed.
+
+---
+
+## Key Issues & Suggested Fixes
+
+### 1. Incomplete / Awkward Opening Message
+
+**Observed behavior:**
+- The receptionist opened with: “For quality and training purposes.”
+- It did not complete the standard disclosure, such as “this call may be recorded.”
+- It then said: “Part of Pretty Good AI,” which sounds internal or test-related and may confuse patients.
+
+**Why this is a problem:**
+- The recording disclosure is incomplete.
+- Patients may not understand whether they are speaking with the clinic, an AI system, or a test line.
+- “Pretty Good AI” branding may reduce trust in a medical setting.
+
+**Suggested fix:**
+- Use a complete, professional opening:
+  - “Thank you for calling Pivot Point Orthopaedics. This call may be recorded for quality and training purposes. I’m the virtual receptionist. How may I help you today?”
+- Remove or hide internal/test branding from patient-facing calls unless legally required.
+
+---
+
+### 2. Identity Confirmation Was Weak
+
+**Observed behavior:**
+- The receptionist asked, “Am I speaking with Alex?”
+- The patient responded by impersonating a receptionist: “Hello! This is the reception line for Pivot Point Orthopaedics. How can I help you today?”
+- The system still replied, “Hi, Alex,” even though the caller did not confirm they were Alex.
+
+**Why this is a problem:**
+- The system accepted identity without confirmation.
+- This could lead to privacy and HIPAA concerns if appointment or patient information is discussed.
+
+**Suggested fix:**
+- Require an explicit confirmation:
+  - “I’m sorry, I didn’t catch that. Are you Alex?”
+- If the caller gives an unexpected response, do not assume identity.
+- For appointment lookup, verify at least full name and date of birth, and possibly phone number or address depending on policy.
+
+---
+
+### 3. Possible Role Confusion / Prompt Injection Vulnerability
+
+**Observed behavior:**
+- The patient said: “Hello! This is the reception line for Pivot Point Orthopaedics. How can I help you today?”
+- The receptionist did not address the fact that the caller was speaking as if they were the receptionist.
+
+**Why this is a problem:**
+- This is a mild role-confusion test.
+- While the bot did continue the call, it did not explicitly maintain role boundaries.
+
+**Suggested fix:**
+- Add guardrails for caller attempts to reverse roles:
+  - “I’m here to assist you as the receptionist for Pivot Point Orthopaedics. Are you calling to schedule or manage an appointment?”
+
+---
+
+### 4. Appointment Lookup Claim Was Inconsistent
+
+**Observed behavior:**
+- The receptionist told the caller: “It looks like you already have a new patient consultation scheduled.”
+- When asked for details, it said: “I don’t have access to your exact appointment details.”
+
+**Why this is a problem:**
+- If the system can determine that an appointment exists, it should ideally be able to provide at least limited information after proper verification.
+- If it cannot access appointment details, it should be careful about making definitive claims.
+- This created confusion for the caller.
+
+**Suggested fix:**
+- Clarify system capabilities:
+  - If the system has appointment metadata, provide it after verification.
+  - If it only detects a duplicate booking rule, say:
+    - “Our system is showing a possible existing appointment associated with your information, but I’ll need a staff member to confirm the details.”
+- Avoid saying “you already have” unless the match is reliable.
+
+---
+
+### 5. Potential False Duplicate Appointment Detection
+
+**Observed behavior:**
+- The caller said they were a new patient.
+- After only collecting date of birth and new-patient status, the system stated that an appointment already existed.
+
+**Why this is a problem:**
+- Date of birth alone is not enough to uniquely identify a patient.
+- This could result in false matches.
+- It may also expose that someone with the same DOB has an appointment.
+
+**Suggested fix:**
+- Require stronger identifiers before checking or referencing appointments:
+  - Full legal name
+  - Date of birth
+  - Phone number
+  - Possibly email or address
+- If match confidence is low, transfer to staff without revealing appointment status.
+
+---
+
+### 6. Transfer Failed / Routed to Test Line
+
+**Observed behavior:**
+- The receptionist said it was connecting the caller to a representative.
+- The transfer reached: “Hello. You’ve reached the Pretty Good AI test line. Goodbye.”
+- The call then ended.
+
+**Why this is a problem:**
+- The caller was not transferred to clinic staff.
+- This is a critical functional failure for escalation.
+- The “test line” message should not be exposed in production-like patient calls.
+
+**Suggested fix:**
+- Verify transfer routing configuration.
+- Ensure the live-agent transfer number points to the actual clinic staff queue.
+- Add fallback handling:
+  - If transfer fails, offer voicemail, callback scheduling, or the clinic’s direct phone number.
+- Remove test-line routing from patient-facing environments.
+
+---
+
+### 7. Caller Speech Was Interrupted / Cut Off
+
+**Observed behavior:**
+- The patient said: “That’s surprising—I don’t recall scheduling an appointment before. Could…”
+- The receptionist interrupted before the caller finished.
+- Later the patient said: “I’d like to know the date, time, and…” and was again cut off.
+
+**Why this is a problem:**
+- The system may be using overly aggressive voice activity detection or turn-taking timing.
+- Interruptions make the experience feel unnatural and can cause missed information.
+
+**Suggested fix:**
+- Increase end-of-speech timeout slightly.
+- Improve barge-in handling.
+- Wait for complete user intent before responding, especially when the caller’s sentence ends with conjunctions like “and,” “or,” “could,” etc.
+
+---
+
+### 8. Scheduling Flow Did Not Actually Offer Availability
+
+**Observed behavior:**
+- The caller asked: “What’s the earliest availability you have?”
+- The system collected some intake information but never provided appointment options.
+- It instead claimed an existing appointment was already scheduled.
+
+**Why this is a problem:**
+- The main user request was not fulfilled.
+- If no scheduling can occur due to an existing appointment, the system should explain clearly and offer a next step.
+
+**Suggested fix:**
+- If no duplicate appointment exists, provide available appointment slots.
+- If a duplicate exists, say:
+  - “I’m unable to schedule another new-patient consultation until we confirm your existing appointment. I can transfer you to staff or take a message for a callback.”
+
+---
+
+### 9. New Patient Intake Was Too Minimal
+
+**Observed behavior:**
+- The system asked for date of birth, new/existing patient status, and provider preference.
+- It did not ask about the reason for visit, affected body part, urgency, injury type, insurance, referral requirements, or contact information.
+
+**Why this is a problem:**
+- Orthopedic scheduling often depends on body part, condition, injury, provider specialty, imaging, insurance, and urgency.
+- Without this information, the system may schedule the wrong specialist or appointment type.
+
+**Suggested fix:**
+- Add structured intake questions:
+  - “What are you being seen for?”
+  - “Which body part is affected?”
+  - “Was this due to an injury?”
+  - “Is this urgent or work-related?”
+  - “Do you have insurance you’d like to use?”
+  - “What is the best phone number and email for confirmation?”
+- Add emergency guidance for severe symptoms or recent trauma.
+
+---
+
+### 10. Minor Language / Grammar Issues
+
+**Observed behavior:**
+- The receptionist said: “I’m here to help with appointments, medication reach, insurance, and general clinic questions.”
+- “Medication reach” appears incorrect.
+- It also said: “Are you open the first available orthopedic specialist?” missing “to seeing.”
+
+**Why this is a problem:**
+- Small language errors reduce professionalism and patient confidence.
+
+**Suggested fix:**
+- Update phrasing:
+  - “I can help with appointments, medication refills, insurance questions, and general clinic information.”
+  - “Are you open to seeing the first available orthopedic specialist?”
+
+---
+
+## Overall Recommendations
+
+- Strengthen patient identity verification before appointment lookup.
+- Fix appointment lookup logic so the system does not make unsupported claims.
+- Repair live-agent transfer routing and add failure fallback options.
+- Improve turn-taking so the bot does not interrupt callers.
+- Expand new-patient scheduling intake to include reason for visit, body part, urgency, insurance, and contact information.
+- Remove test/internal branding from patient-facing interactions.
+- Polish opening disclosure and medical-office language for professionalism.

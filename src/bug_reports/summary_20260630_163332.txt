@@ -1,0 +1,132 @@
+# Receptionist System QA Report
+
+## Summary
+The receptionist successfully created a demo patient profile, gathered the visit reason, searched availability, booked an appointment, and answered a follow-up question. However, there were several issues involving provider-name consistency, conversation flow, patient verification, and appointment confirmation.
+
+---
+
+## Issues & Areas for Improvement
+
+### 1. Provider Name Changed During Booking
+- **Issue:** The system first offered the appointment with **“Dugie Hauser”**, then confirmed it with **“Judy Hauser.”**
+- **Why it matters:** This creates confusion and could lead to the patient arriving expecting the wrong provider.
+- **Suggested fix:**
+  - Use one canonical provider name from the scheduling system throughout the call.
+  - Before final booking, confirm: “Just to confirm, this appointment is with Judy Hauser on Thursday, July 9 at 3 PM. Would you like me to book it?”
+  - Add validation to prevent mismatches between offered slot and booked slot.
+
+---
+
+### 2. Did Not Wait for Patient Response Before Continuing Demo Setup
+- **Issue:** The system asked, “Would you like to create a demo patient profile?” but immediately continued with “I just need your first and last name to get started.”
+- **Why it matters:** The caller was not given a chance to answer the yes/no question.
+- **Suggested fix:**
+  - Wait for the caller’s response before moving forward.
+  - Example: “Would you like to create a demo patient profile?”  
+    If yes: “Great, may I have your first and last name?”
+
+---
+
+### 3. Demo DOB Was Assigned Without Confirmation
+- **Issue:** The system stated: “Your patient profile is set up and your date of birth is July fourth two thousand for demo purposes.”
+- **Why it matters:** Even in demo mode, assigning demographics without confirmation may be confusing or unrealistic.
+- **Suggested fix:**
+  - Clarify this is a demo-only placeholder.
+  - Example: “For this demo, I’ll use July 4, 2000 as the date of birth. Is that okay?”
+
+---
+
+### 4. Missing Patient Verification Before Scheduling
+- **Issue:** The system did not verify or collect key patient details beyond first and last name.
+- **Missing items may include:**
+  - Date of birth confirmation
+  - Phone number
+  - Email address
+  - Insurance information
+  - Whether the patient is new or established, aside from visit type
+- **Why it matters:** Real appointment scheduling typically requires accurate patient identification and contact information.
+- **Suggested fix:**
+  - Add a verification step before booking.
+  - Example: “Before I schedule that, can I confirm your date of birth and best callback number?”
+
+---
+
+### 5. No Basic Clinical Triage for Knee Pain
+- **Issue:** The patient reported knee pain for several weeks, but the system did not ask about severity, injury, swelling, inability to bear weight, fever, or urgent symptoms.
+- **Why it matters:** Some orthopedic complaints may require urgent care or emergency evaluation.
+- **Suggested fix:**
+  - Add a brief safety screen for musculoskeletal complaints.
+  - Example: “Are you unable to bear weight, experiencing severe swelling, fever, numbness, or did this happen after a major injury?”
+  - If red flags are present, advise urgent care/emergency care per approved clinical protocol.
+
+---
+
+### 6. Appointment Confirmation Lacked Some Details
+- **Issue:** The confirmation included date, time, provider, and clinic name, but did not include:
+  - Full location/address
+  - Year
+  - Time zone, if relevant
+  - Appointment type
+  - Arrival time recommendation
+  - Cancellation/rescheduling instructions
+- **Why it matters:** Patients may need complete details to prepare and arrive correctly.
+- **Suggested fix:**
+  - Provide a fuller confirmation:
+    - “You’re scheduled for a new patient consultation for knee pain with Judy Hauser on Thursday, July 9, 2026 at 3:00 PM at Pivot Point Orthopedics, [address]. Please arrive 15 minutes early.”
+
+---
+
+### 7. Awkward / Incomplete Phrase
+- **Issue:** The system said: “For sharing that. Do you have a specific provider you'd like to see?”
+- **Expected phrasing:** “Thank you for sharing that.”
+- **Why it matters:** This sounds like a cut-off sentence or generation error.
+- **Suggested fix:**
+  - Update prompt/template to use complete phrases.
+  - Add QA checks for incomplete sentence starts.
+
+---
+
+### 8. Speech Turn-Taking / Chunking Appears Unnatural
+- **Issue:** The receptionist’s responses were split across many short fragments, such as:
+  - “For example, is this for a routine checkup?”
+  - “A new patient consultation,”
+  - “an urgent concern,”
+  - “or something else?”
+- **Why it matters:** Excessive chunking can sound robotic and may cause callers to interrupt or become confused.
+- **Suggested fix:**
+  - Combine related prompts into one smoother utterance.
+  - Example: “Can you tell me the reason for your visit? For example, is this a routine checkup, new patient consultation, urgent concern, or something else?”
+
+---
+
+### 9. Forms Answer Was Minimal
+- **Issue:** When asked whether forms could be completed before the visit, the system only said they can be filled out upon arrival.
+- **Why it matters:** Many practices offer online forms or recommend arriving early.
+- **Suggested fix:**
+  - Provide more helpful preparation guidance:
+    - “You can complete them when you arrive. Please arrive 15–20 minutes early. If online forms are available, we can send them by email or text.”
+
+---
+
+### 10. No Final Confirmation of Patient Understanding
+- **Issue:** After clarifying the provider name, the system did not restate the complete appointment details again.
+- **Why it matters:** Since the patient specifically identified a name discrepancy, a full corrected confirmation would improve confidence.
+- **Suggested fix:**
+  - After correction, restate all key details:
+    - “To confirm, your appointment is Thursday, July 9 at 3:00 PM with Judy Hauser at Pivot Point Orthopedics.”
+
+---
+
+## Positive Observations
+- The system appropriately asked for the reason for visit before checking availability.
+- It offered first available when the patient had no provider preference.
+- It handled the patient’s clarification question politely.
+- It provided basic preparation instructions: photo ID, insurance card, medication list, and imaging discs.
+
+---
+
+## Highest Priority Fixes
+1. **Fix provider-name inconsistency between offered and booked appointments.**
+2. **Improve patient verification before booking.**
+3. **Add red-flag triage for orthopedic complaints.**
+4. **Make appointment confirmations more complete and consistent.**

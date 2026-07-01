@@ -1,0 +1,134 @@
+# Receptionist System QA Report
+
+## 1. Inconsistent Facility/Brand Naming
+- **Issue:** The receptionist used multiple names for the organization:
+  - “Pivot Point Orthopaedics”
+  - “Pretty Good AI”
+  - “Tissot Point Orthopaedics”
+  - “Pretty Good AI test line”
+- **Impact:** This is confusing and undermines trust. A real patient may think they reached the wrong office.
+- **Suggestion:** Standardize the practice name across all prompts, fallback messages, transfer flows, and test-line routing. Remove internal/vendor branding such as “Pretty Good AI” from patient-facing scripts unless intentionally disclosed.
+
+---
+
+## 2. Poor Opening Script / Missing Complete Recording Disclosure
+- **Issue:** The call opened with: “Be recorded for quality and training purposes.” This sounds incomplete and unnatural.
+- **Impact:** May fail to provide a clear recording disclosure and creates an unprofessional first impression.
+- **Suggestion:** Use a complete phrase such as:  
+  “This call may be recorded for quality and training purposes. Thanks for calling Pivot Point Orthopaedics.”
+
+---
+
+## 3. Identity Confirmation Was Not Handled Correctly
+- **Issue:** The receptionist asked, “Am I speaking with Alex?” The patient responded by asking to confirm who they were speaking with, but the receptionist ignored that and moved directly to asking for date of birth.
+- **Impact:** The patient’s question was not answered, and the flow became awkward.
+- **Suggestion:** If the caller asks who they are speaking with, the receptionist should respond clearly, e.g.:  
+  “You’re speaking with the virtual receptionist for Pivot Point Orthopaedics. Am I speaking with Alex?”
+
+---
+
+## 4. Date of Birth Mismatch Was Accepted “For Demo Purposes”
+- **Issue:** The receptionist said: “The birthday doesn't match our records, but for demo purposes, I'll accept it.”
+- **Impact:** This is a serious privacy and security issue. If DOB does not match, the system should not proceed as though identity has been verified.
+- **Suggestion:** Replace this with a safe verification failure flow:
+  - Re-ask the DOB once if there may have been a transcription error.
+  - If still mismatched, do not disclose appointment information.
+  - Offer transfer to staff for manual verification.
+
+---
+
+## 5. Potential PHI Disclosure After Failed Verification
+- **Issue:** After accepting a mismatched DOB, the receptionist disclosed that the caller already had a new patient consultation booked.
+- **Impact:** This could expose protected health information to the wrong caller.
+- **Suggestion:** Do not disclose appointment existence, provider, visit type, or other account details unless identity verification succeeds.
+
+---
+
+## 6. Provider Directory / Practice Context Confusion
+- **Issue:** The receptionist said, “We don't have a provider named doctor Clark. At Tissot Point Orthopaedics.” This was grammatically awkward and used the wrong facility name.
+- **Impact:** The caller may question whether they are speaking to the correct office.
+- **Suggestion:** Improve the provider-not-found response:
+  - “I don’t see a Dr. Clark at Pivot Point Orthopaedics. Our available providers are Dr. Hauser, Dr. Ross, and Dr. Bricker. Would you like to schedule with one of them?”
+
+---
+
+## 7. Scheduling Capability Was Unclear and Inconsistent
+- **Issue:** The receptionist initially proceeded as if it could schedule an appointment, but then later said:
+  - “It looks like you already have a new patient consultation booked.”
+  - “I can help you reschedule or cancel that appointment.”
+  - “I'm unable to access rescheduling options directly.”
+  - “I can't schedule a new patient consultation with doctor Ross right now.”
+- **Impact:** The system overpromised and then failed to complete the task.
+- **Suggestion:** The receptionist should only offer actions it can actually perform. If it cannot reschedule directly, it should say so earlier:
+  - “I can help gather your information and connect you with a team member to reschedule.”
+
+---
+
+## 8. Repetitive / Looping Dialogue
+- **Issue:** After the patient said they wanted to reschedule, the receptionist responded with “You're welcome” and then asked again whether the patient wanted to reschedule, cancel, or speak with a team member.
+- **Impact:** This feels like the system did not understand the patient’s request.
+- **Suggestion:** Once intent is identified, move forward:
+  - “Got it. I’ll help with rescheduling. Let me check available options.”
+
+---
+
+## 9. No Appointment Availability Was Provided
+- **Issue:** The patient repeatedly asked for the soonest available appointment and other available dates/times, but the receptionist never provided any availability.
+- **Impact:** The primary user goal was not fulfilled.
+- **Suggestion:** Integrate scheduling availability or provide a clear fallback:
+  - If availability can be accessed: present the next 2–3 options.
+  - If not: collect preferences and transfer.
+  - Example: “I’m not able to view live availability, but I can connect you to scheduling now.”
+
+---
+
+## 10. Transfer Flow Failed or Was Misconfigured
+- **Issue:** The receptionist said it would connect the caller to a representative, but the call reached: “Hello. You've reached the Pretty Good AI test line. Goodbye.”
+- **Impact:** The caller was not successfully transferred to a human or scheduling team.
+- **Suggestion:** Fix the transfer destination and ensure the caller reaches the correct live queue, voicemail, or callback workflow. Add a fallback if no representative is available:
+  - “Our team is unavailable right now. I can take a message or help you request a callback.”
+
+---
+
+## 11. Context Was Lost During Transfer Attempt
+- **Issue:** While transferring, the receptionist suddenly said, “I can't schedule a new patient consultation with doctor Ross right now,” even though the current task was rescheduling an existing consultation.
+- **Impact:** This indicates context drift.
+- **Suggestion:** Preserve the current task state. The system should distinguish between:
+  - New appointment scheduling
+  - Existing appointment rescheduling
+  - Cancellation
+  - Transfer to staff
+
+---
+
+## 12. Tone and Professionalism Issues
+- **Issue:** Several phrases sounded unnatural or unprofessional:
+  - “Part of Pretty Good AI.”
+  - “for demo purposes, I'll accept it.”
+  - “doctor Ross” instead of “Dr. Ross”
+  - “Please wait” repeated after already saying “Please stay on the line.”
+- **Impact:** Reduces patient confidence.
+- **Suggestion:** Use polished, patient-facing scripts and avoid internal testing language in production or simulated patient-facing flows.
+
+---
+
+## 13. Medical Triage / Urgency Was Not Assessed
+- **Issue:** The patient reported knee pain, but the system did not ask any screening questions or advise appropriate escalation for urgent symptoms.
+- **Impact:** Some knee pain scenarios may require urgent evaluation, especially with severe pain, swelling, injury, inability to bear weight, fever, or signs of infection/clot.
+- **Suggestion:** Add a brief safety screen before routine scheduling:
+  - “Is this due to a recent injury?”
+  - “Are you unable to bear weight?”
+  - “Do you have severe swelling, fever, redness, or worsening pain?”
+  - If urgent symptoms are present, advise appropriate care or transfer to clinical staff.
+
+---
+
+# Key Recommendations
+
+- Standardize all organization and provider naming.
+- Never bypass failed identity verification.
+- Do not disclose appointment information unless verification succeeds.
+- Align the receptionist’s offered options with actual system capabilities.
+- Fix the transfer destination and fallback behavior.
+- Improve context retention between scheduling, rescheduling, and transfer states.
+- Add a short clinical safety screen for pain-related appointment requests.

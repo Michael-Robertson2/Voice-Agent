@@ -1,0 +1,149 @@
+# Receptionist System QA Report
+
+## Summary
+
+The call completed basic identity collection, but several issues were observed around caller identification, verification flow, privacy, transfer handling, and conversational quality. The most serious concerns are potential disclosure of patient information before proper verification and a failed live-agent transfer.
+
+---
+
+## Critical Issues
+
+### 1. Possible PII Disclosure Before Proper Verification
+- **What happened:** After the caller provided only name and date of birth, the receptionist stated:
+  - “I have your phone number as 669-336-5729…”
+- **Why this is an issue:** The system disclosed a phone number on file before clearly completing a secure verification process. Name and DOB alone may not be sufficient to safely disclose contact information.
+- **Risk:** Privacy/HIPAA concern. A caller could provide someone else’s name and DOB and receive phone number information.
+- **Suggested fix:**
+  - Do not reveal phone numbers, addresses, appointment details, or other patient data until the caller has been fully verified.
+  - Instead ask the caller to provide the phone number they believe is on file.
+  - Example: “For your privacy, I can’t read the phone number on file. Please provide the number you’d like me to verify.”
+
+---
+
+### 2. Failed Live-Agent Transfer
+- **What happened:** The receptionist said, “Connecting you to a representative,” but the call then reached:
+  - “Hello. You’ve reached the Pretty Good AI test line. Goodbye.”
+- **Why this is an issue:** The caller requested a live agent, but the transfer did not connect them to one.
+- **Risk:** Poor user experience and failed escalation for cases the AI cannot handle.
+- **Suggested fix:**
+  - Verify transfer routing and phone tree configuration.
+  - If no live agent is available, the system should say so clearly and offer alternatives such as a callback request.
+  - Example: “I’m sorry, no live agents are available right now. I can take a message and have someone call you back.”
+
+---
+
+## High-Priority Issues
+
+### 3. Confusing Initial Caller Identification
+- **What happened:** The receptionist asked, “Am I speaking with Alex?” even though the caller said they were not Alex.
+- **Why this is an issue:** The system appeared to assume the caller’s identity incorrectly.
+- **Suggested fix:**
+  - If the system has caller ID or a predicted patient profile, phrase it more safely:
+    - “Is this Alex, or are you calling on behalf of someone else?”
+  - If the caller says they are not Alex, the receptionist should reset the identity flow:
+    - “No problem. Who am I speaking with today?”
+
+---
+
+### 4. Inconsistent Record Lookup Flow
+- **What happened:** The receptionist asked for name and DOB, then asked whether the caller wanted to use a phone number to look up the record. The caller said they were not sure which phone number was on file, but the receptionist later provided the phone number anyway.
+- **Why this is an issue:** The flow was inconsistent. It was unclear whether the system had already found a matching record, needed more information, or was attempting another lookup method.
+- **Suggested fix:**
+  - Use a clear, deterministic verification flow:
+    1. Ask for full name.
+    2. Ask for DOB.
+    3. Ask caller to provide phone number or another verification detail.
+    4. Confirm whether a record was found without revealing sensitive data.
+  - Example: “I found a possible record, but I need one more detail to verify your identity. Please provide the phone number we may have on file.”
+
+---
+
+### 5. Abrupt Failure Message After Verification
+- **What happened:** After confirming the caller’s DOB and phone number, the receptionist said:
+  - “I can’t proceed further right now, but I can make sure our clinic support team follows up with you.”
+- **Why this is an issue:** The system did not explain why it could not continue or what action it could perform next.
+- **Suggested fix:**
+  - Provide a clear reason and next step.
+  - Example: “I’m having trouble accessing the scheduling system right now. I can transfer you to a live representative or take a callback request.”
+
+---
+
+## Medium-Priority Issues
+
+### 6. The Receptionist Never Asked the Reason for the Call
+- **What happened:** The entire interaction focused on identifying the patient, but the receptionist never asked what the caller needed help with.
+- **Why this is an issue:** The caller may have wanted scheduling, billing, records, directions, or another service. The system moved into verification without triaging the request.
+- **Suggested fix:**
+  - Ask the reason for the call early.
+  - Example: “How can I help you today?” or “Are you calling to schedule, cancel, ask about billing, or something else?”
+  - Only collect PHI when necessary for the requested task.
+
+---
+
+### 7. Repetitive Verification Requests
+- **What happened:** The receptionist repeatedly asked for name, DOB, and spelling even after the caller had already provided them.
+- **Why this is an issue:** This creates friction and makes the system feel inefficient.
+- **Suggested fix:**
+  - Store captured information within the session.
+  - Avoid re-asking unless recognition confidence is low.
+  - If confirmation is needed, ask concise yes/no confirmation:
+    - “I have Jamie Reynolds, date of birth March 14, 1985. Is that correct?”
+
+---
+
+### 8. Grammar Error
+- **What happened:** The receptionist said:
+  - “Could you please your first and last name and your date of birth one more time?”
+- **Why this is an issue:** This is grammatically incorrect and sounds unpolished.
+- **Suggested fix:**
+  - Correct the phrase to:
+    - “Could you please provide your first and last name and date of birth one more time?”
+
+---
+
+### 9. Awkward Speech Segmentation
+- **What happened:** Several receptionist messages were split unnaturally:
+  - “For quality and training purposes,” followed by a delay.
+  - “Please” as a standalone fragment before transfer.
+  - Phone number digits were separated into multiple turns.
+- **Why this is an issue:** It makes the conversation sound broken and may confuse callers.
+- **Suggested fix:**
+  - Improve TTS/message chunking.
+  - Avoid sending incomplete phrases as separate turns.
+  - Group related information into a single coherent response.
+
+---
+
+## Branding and Compliance Concerns
+
+### 10. Incomplete Recording Disclosure
+- **What happened:** The receptionist began with:
+  - “For quality and training purposes,”
+  but did not complete the statement.
+- **Why this is an issue:** If the call is recorded or monitored, the disclosure should be complete and compliant.
+- **Suggested fix:**
+  - Use a full statement:
+    - “For quality and training purposes, this call may be recorded or monitored.”
+
+---
+
+### 11. Confusing Branding
+- **What happened:** The receptionist said:
+  - “Thanks for calling Pivot Point Orthopaedics. Part of Pretty Good AI.”
+- **Why this is an issue:** “Part of Pretty Good AI” may confuse patients and reduce trust, especially in a medical context.
+- **Suggested fix:**
+  - Clarify the relationship if necessary:
+    - “You’re speaking with the virtual assistant for Pivot Point Orthopaedics.”
+  - Avoid exposing internal test/vendor branding on patient-facing lines unless required.
+
+---
+
+## Recommendations
+
+- Tighten the patient verification workflow and avoid disclosing stored patient information before verification.
+- Fix live-agent transfer routing and provide fallback options when transfer fails.
+- Ask the reason for the call before collecting detailed patient information.
+- Improve handling when the caller is not the expected patient.
+- Reduce repetition and preserve context across turns.
+- Clean up grammar, message chunking, and opening compliance language.
+- Remove or clarify internal/test branding from the patient-facing experience.

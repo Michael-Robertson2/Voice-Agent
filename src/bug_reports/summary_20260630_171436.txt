@@ -1,0 +1,144 @@
+# Receptionist System QA Report
+
+## Overall Outcome
+The call failed to complete the patient’s primary goal: scheduling an appointment for a knee issue. The assistant collected some identifying information but then got stuck in a repeated prompt loop, failed to access or provide appointment availability, and transferred the caller to a test line that ended the call.
+
+---
+
+## Issues Identified
+
+### 1. Confusing Opening / Identity Handling
+- **What happened:** The receptionist asked, “Am I speaking with Alex?” even though the caller was not Alex.
+- **Why it’s an issue:** This creates confusion and may make the caller think the system has incorrect records or is speaking to the wrong person.
+- **Suggestion:**  
+  - If caller ID is associated with a known patient, phrase it more carefully:  
+    - “I may have your number associated with Alex. Is that who I’m speaking with?”  
+  - If uncertain, ask neutrally:  
+    - “May I have your name, please?”
+
+---
+
+### 2. Awkward and Potentially Unprofessional Self-Description
+- **What happened:** The assistant said, “I’m not Alex. Or the receptionist. I’m the voice assistant…”
+- **Why it’s an issue:** Saying “I’m not the receptionist” may undermine caller confidence, especially since the assistant is performing receptionist duties.
+- **Suggestion:** Use a clearer phrase:
+  - “I’m the virtual receptionist for Pivot Point Orthopaedics.”
+
+---
+
+### 3. Inappropriate Branding / Test-System Language
+- **What happened:** The assistant said “Part of Pretty Good AI,” and later transferred to “the Pretty Good AI test line.”
+- **Why it’s an issue:** This exposes internal/vendor/test branding to patients and makes the call feel non-production.
+- **Suggestion:**  
+  - Remove vendor/test branding from patient-facing flows.
+  - Ensure transfer numbers route to the clinic or live support, not a test line.
+  - Add environment safeguards so production calls cannot hit test endpoints.
+
+---
+
+### 4. Did Not Answer the Patient’s Scheduling Question
+- **What happened:** The patient asked for the earliest appointment availability for a knee issue. The assistant immediately moved to identity collection and never provided availability.
+- **Why it’s an issue:** The patient’s core request was not fulfilled.
+- **Suggestion:**  
+  - After collecting required verification, the assistant should query the scheduling system and offer available appointment times.
+  - If availability cannot be checked, explain clearly and offer a callback or live transfer.
+
+---
+
+### 5. Repeated Prompt Loop for Last Name Spelling
+- **What happened:** The patient spelled the last name multiple times, but the assistant repeatedly asked again:
+  - “Could you please spell your last name, Miller?”
+  - “Go ahead and spell your last name…”
+  - “Please spell your last name…”
+- **Why it’s an issue:** This is a major conversational failure and causes caller frustration.
+- **Likely cause:** The system did not correctly detect or store the spelled last name, despite the patient providing it clearly.
+- **Suggestion:**  
+  - Improve slot-filling logic for spelled names.
+  - Confirm what was heard after the first spelling attempt:
+    - “I heard M-I-L-L-E-R. Is that correct?”
+  - Add loop protection: after 2 failed attempts, escalate or proceed with a note rather than repeating indefinitely.
+
+---
+
+### 6. Assistant Asked Multiple Questions Too Quickly
+- **What happened:** The assistant asked, “Is that correct?” and then immediately continued, “If so, could you please spell your first and last name for me?” before the patient had a chance to respond.
+- **Why it’s an issue:** This can interrupt the caller and make the dialogue feel unnatural.
+- **Suggestion:**  
+  - Wait for the caller’s answer after yes/no confirmation prompts.
+  - Avoid stacking unrelated requests immediately after a confirmation question.
+
+---
+
+### 7. Poor Error Recovery
+- **What happened:** After the repeated spelling loop, the assistant abruptly said it could not proceed and would document the request.
+- **Why it’s an issue:** The system did not explain what went wrong or provide a meaningful next step.
+- **Suggestion:**  
+  - Use a clearer fallback:
+    - “I’m having trouble capturing that information accurately. I’ll connect you with a team member who can help schedule the appointment.”
+  - Make sure the transfer actually reaches a human or a clinic voicemail.
+
+---
+
+### 8. Failed Transfer
+- **What happened:** The assistant said it was connecting the caller to a representative, but the call reached a test line and then ended.
+- **Why it’s an issue:** This is a critical failure. The patient was not helped and may believe the clinic disconnected them.
+- **Suggestion:**  
+  - Validate transfer routing in production.
+  - Add a transfer failure fallback:
+    - “I’m sorry, I wasn’t able to connect you. I can take a message or provide the clinic’s direct number.”
+  - Monitor transfers and alert staff when calls route to unexpected destinations.
+
+---
+
+### 9. Vague Statement: “I Can’t Proceed Further Right Now”
+- **What happened:** The assistant did not explain why it could not proceed.
+- **Why it’s an issue:** The caller is left without context or confidence that their request will be handled.
+- **Suggestion:** Replace with a more helpful message:
+  - “I’m having trouble accessing the scheduling system right now.”
+  - “I’m going to transfer you to someone who can complete the appointment scheduling.”
+
+---
+
+### 10. No Appointment-Specific Intake
+- **What happened:** The assistant did not ask relevant scheduling questions beyond identity verification.
+- **Missing items may include:**
+  - New or existing patient status
+  - Which knee / injury details
+  - Urgency or recent trauma
+  - Preferred provider or location
+  - Insurance
+  - Preferred days/times
+- **Suggestion:** Build a structured orthopedic scheduling intake flow before offering appointments or transfer.
+
+---
+
+### 11. Potential Privacy Concern When Repeating Full Patient Details
+- **What happened:** The assistant recited the caller’s full phone number and date of birth.
+- **Why it’s an issue:** This may be acceptable in some verification contexts, but should be handled carefully, especially if the caller’s environment is not private.
+- **Suggestion:**  
+  - Consider partial confirmation:
+    - “I have a phone number ending in 5729. Is that correct?”
+  - Avoid reading full sensitive details unless necessary.
+
+---
+
+## High-Priority Fixes
+
+1. **Fix the last-name spelling capture loop.**
+2. **Validate production transfer routing; remove test-line transfers.**
+3. **Integrate or repair appointment availability lookup.**
+4. **Remove internal/vendor/test branding from patient-facing calls.**
+5. **Improve fallback handling so callers are not abruptly abandoned.**
+
+---
+
+## Recommended Improved Flow
+
+1. Greet caller professionally.
+2. Ask how to help.
+3. Confirm appointment need: knee issue.
+4. Collect/verify patient identity.
+5. Ask basic scheduling and clinical triage questions.
+6. Search availability.
+7. Offer appointment times.
+8. Confirm appointment or, if unable, transfer to a real representative or create a documented callback request.

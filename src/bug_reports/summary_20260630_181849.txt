@@ -1,0 +1,230 @@
+# Receptionist System QA Report
+
+## Overall Outcome
+The receptionist was able to identify that Dr. Patterson was not an available provider and offered alternatives. However, the call ultimately failed: the patient was not scheduled, identity verification became stuck in repeated loops, and the attempted escalation routed to a test line instead of a representative or callback workflow.
+
+---
+
+## Key Issues & Recommendations
+
+### 1. Awkward and Fragmented Opening
+**Issue**
+- The call began with fragmented phrases:
+  - “Quality and training purposes.”
+  - “Thanks for calling Pivot Point Orthopaedics.”
+  - “Part of Pretty Good AI,”
+  - “Am I speaking with Alex?”
+- The intro sounded incomplete and unnatural.
+- The system asked if it was speaking with “Alex” even though the patient later identified as Jordan Matthews.
+
+**Suggestion**
+- Use a complete, polished greeting:
+  - “Thank you for calling Pivot Point Orthopaedics. This call may be recorded for quality and training purposes. How may I help you today?”
+- Only ask for a caller’s name if needed, and avoid assuming a name unless confidently sourced from caller ID or records.
+
+---
+
+### 2. Susceptibility to Confusing User Prompting
+**Issue**
+- The patient began by giving meta-instructions and even impersonated the receptionist:
+  - “Hello! This is Pivot Point Orthopaedics. How may I assist you today?...”
+- The receptionist did not fully address the confusion but continued with a generic response.
+
+**Suggestion**
+- Add guardrails to ignore role-play, prompt-injection, or test instructions from callers.
+- The receptionist should stay in role and respond naturally:
+  - “I’m the receptionist for Pivot Point Orthopaedics. How can I help you today?”
+
+---
+
+### 3. Provider Name Error: “Pricker” Instead of “Bricker”
+**Issue**
+- The receptionist first correctly listed “Dr. Bricker,” but later said:
+  - “Doctor Hauser and doctor Pricker both treat knee injuries…”
+- This is likely an ASR/TTS or retrieval issue.
+
+**Suggestion**
+- Ensure provider names are stored as fixed entities and pronounced consistently.
+- Add pronunciation rules or phonetic hints for names such as “Bricker.”
+- Confirm provider names before using them in scheduling workflows.
+
+---
+
+### 4. Inconsistent Practice Name Spelling
+**Issue**
+- The system alternated between:
+  - “Pivot Point Orthopaedics”
+  - “Pivot Point Orthopedics”
+
+**Suggestion**
+- Standardize the clinic name across all system prompts, knowledge base entries, and TTS scripts.
+
+---
+
+### 5. Potentially Unsupported Provider Descriptions
+**Issue**
+- The receptionist said:
+  - “Doctor Hauser is known for quick evaluations and procedures.”
+  - “Dr. Bricker focuses on practical treatment plans and recovery.”
+- These claims may be subjective or unsupported.
+
+**Suggestion**
+- Use neutral, policy-approved descriptions:
+  - “Dr. Hauser and Dr. Bricker both see patients for knee concerns.”
+- Avoid qualitative comparisons unless explicitly approved by the clinic.
+
+---
+
+### 6. Did Not Answer Availability Question
+**Issue**
+- The patient asked whether Dr. Bricker had openings on Wednesday or Thursday next week.
+- Instead of checking availability or explaining the next step, the system immediately asked for date of birth.
+
+**Suggestion**
+- Acknowledge the scheduling request before requesting identifying information:
+  - “I can check that for you. To look up your chart and schedule, may I have your full name and date of birth?”
+- If schedule access is unavailable, say so clearly:
+  - “I don’t have live schedule access, but I can send a request to our scheduling team.”
+
+---
+
+### 7. Repeated Failure to Capture Date of Birth
+**Issue**
+- The patient provided DOB multiple times:
+  - “July 15, 1987.”
+- The receptionist repeatedly asked for it again:
+  - “Go ahead and tell me your date of birth.”
+  - “Please tell me your date of birth.”
+  - “Please confirm your date of birth.”
+- This created a frustrating loop.
+
+**Suggestion**
+- Improve entity extraction for date of birth.
+- Once DOB is captured, store it in session memory and do not ask again unless there is a mismatch.
+- Confirm once:
+  - “Thank you. I have July 15, 1987. Is that correct?”
+
+---
+
+### 8. Repeated Failure to Capture Full Name
+**Issue**
+- The patient provided the name “Jordan Matthews,” then attempted to spell it.
+- The receptionist interrupted repeatedly and asked the same question many times:
+  - “Please spell out your first and last name.”
+  - “Could you please spell out your full first and last name for me?”
+  - “Go ahead and spell out your first and last name, please.”
+- Even after the patient said:
+  - “My first name is J-O-R-D-A-N. My last name is M-A-T-T-H-E-W-S.”
+- The receptionist responded:
+  - “Thanks, Jordan. Please spell out your last name.”
+
+**Suggestion**
+- Fix turn-taking and barge-in behavior so the patient has enough time to finish spelling.
+- Add state tracking:
+  - First name captured: Jordan
+  - Last name captured: Matthews
+  - DOB captured: July 15, 1987
+- Do not re-ask for fields already captured unless confidence is low.
+- If confidence is low, ask a targeted clarification:
+  - “I have Jordan Matthews. Is that correct?”
+
+---
+
+### 9. Poor Turn-Taking / Interruptions During Spelling
+**Issue**
+- The receptionist repeatedly spoke while the patient was still providing information.
+- The patient’s responses were cut off several times:
+  - “Certainly! My name is Jordan Matthews. That’s…”
+  - “Sure! My first name…”
+  - “Of course! My…”
+
+**Suggestion**
+- Increase end-of-speech timeout during data collection, especially when spelling names.
+- Use prompts like:
+  - “Please spell your first and last name, and I’ll wait until you’re finished.”
+- Disable premature interruption unless the patient clearly stops.
+
+---
+
+### 10. Phone Number Lookup Worked Partially but Did Not Resolve the Flow
+**Issue**
+- The receptionist offered phone lookup and correctly repeated:
+  - 415-555-3812
+  - July 15, 1987
+- The patient confirmed both.
+- Then the receptionist still asked:
+  - “Please confirm your date of birth.”
+- After the DOB was confirmed again, it said:
+  - “I can’t proceed further right now…”
+
+**Suggestion**
+- After successful confirmation, proceed to the next step:
+  - Check schedule availability, book appointment, or create a scheduling request.
+- If lookup failed, state the specific issue:
+  - “I’m not finding a matching record with that phone number and date of birth.”
+- Avoid asking for the same verification after it has already been confirmed.
+
+---
+
+### 11. Vague Failure Message
+**Issue**
+- The receptionist said:
+  - “I can’t proceed further right now…”
+- It did not explain whether the issue was schedule access, chart lookup, system error, or something else.
+
+**Suggestion**
+- Provide a clear reason and next step:
+  - “I’m having trouble accessing the scheduling system right now. I can send a message to our scheduling team to call you back about an appointment with Dr. Bricker.”
+
+---
+
+### 12. Broken Escalation / Transfer Flow
+**Issue**
+- The receptionist offered to have the support team contact the patient.
+- After the patient agreed, the receptionist said:
+  - “Connecting you to a representative. Please wait.”
+- Instead of reaching a representative, the call routed to:
+  - “Hello. You’ve reached the Pretty Good AI test line. Goodbye.”
+- This is a serious escalation failure.
+
+**Suggestion**
+- Fix transfer routing for live representative handoff.
+- If no representative is available, create a callback task instead of transferring to a test line.
+- The system should confirm:
+  - “I’ve sent your request to our scheduling team. They’ll call you at 415-555-3812.”
+
+---
+
+### 13. Did Not Complete Scheduling or Create Confirmed Callback
+**Issue**
+- The patient wanted an appointment with Dr. Bricker next week, preferably Wednesday or Thursday.
+- The receptionist did not confirm that a callback request was actually created.
+- No appointment options, scheduling ticket number, or expected callback timeframe were provided.
+
+**Suggestion**
+- The system should summarize and confirm the final request:
+  - “I’ll ask the scheduling team to contact Jordan Matthews at 415-555-3812 about a knee injury appointment with Dr. Bricker next Wednesday or Thursday.”
+- Provide an expected response window:
+  - “They should contact you within one business day.”
+
+---
+
+### 14. Missing Urgency / Safety Screening for Knee Injury
+**Issue**
+- The patient reported a knee injury.
+- The receptionist did not ask any basic urgency screening questions or provide guidance for severe symptoms.
+
+**Suggestion**
+- Include a short, non-diagnostic safety script:
+  - “If you have severe pain, inability to bear weight, significant swelling, numbness, or signs of infection, please seek urgent medical care or call 911 if it’s an emergency.”
+- Then continue with scheduling.
+
+---
+
+## Most Critical Fixes
+
+- Fix identity capture and state management for DOB, full name, and phone number.
+- Improve turn-taking so the AI does not interrupt patients while spelling names.
+- Repair the escalation route; it should not connect to a test line.
+- Ensure provider names are pronounced and referenced correctly.
+- Make the scheduling flow actually progress after verification or clearly create a callback task.

@@ -1,0 +1,38 @@
+[2026-07-01T01:03:39.656+00:00] receptionist: Recorded for quality and training purposes.
+[2026-07-01T01:03:44.394+00:00] patient: 
+[2026-07-01T01:03:44.436+00:00] receptionist: Thanks for calling Pivot Point Orthopaedics.
+[2026-07-01T01:03:47.786+00:00] patient: 
+[2026-07-01T01:03:48.031+00:00] receptionist: Part of Pretty Good AI. Am I speaking with Alex?
+[2026-07-01T01:03:51.341+00:00] patient: Hi! Yes, this is Alex. How can I assist you today at Pivot Point Orthopaedics?
+[2026-07-01T01:03:58.876+00:00] receptionist: Please provide your date of birth.
+[2026-07-01T01:04:00.117+00:00] patient: I'm sorry, but I can't provide a personal date of birth. However, I'm here to assist you with scheduling appointments,
+[2026-07-01T01:04:06.634+00:00] receptionist: Yes. I need your date of birth to continue.
+[2026-07-01T01:04:08.942+00:00] patient: 
+[2026-07-01T01:04:09.314+00:00] receptionist: Could you please tell me your date of birth?
+[2026-07-01T01:04:10.800+00:00] patient: I'm actually a virtual receptionist, so I don't have a date of birth. However, I'm here to help you schedule appointments, answer questions about our services, or assist you in any way you need! How can I assist you today?
+[2026-07-01T01:04:25.694+00:00] receptionist: Thanks for letting me know.
+[2026-07-01T01:04:26.955+00:00] patient: 
+[2026-07-01T01:04:27.232+00:00] receptionist: If you're a virtual receptionist, how can I help you with Pivot Point Orthopedics today?
+[2026-07-01T01:04:31.416+00:00] patient: Thank you for asking! As a virtual receptionist for Pivot Point Orthopaedics, my role is to assist you. If you’re looking to schedule an appointment, get information about our providers or services, or have questions about your visit, I’m here to help. How may I assist you today?
+[2026-07-01T01:04:50.695+00:00] receptionist: I appreciate your message.
+[2026-07-01T01:04:51.472+00:00] patient: 
+[2026-07-01T01:04:51.977+00:00] receptionist: If you need any information about Pivot Point Orthopaedics, our providers, or want to schedule an appointment,
+[2026-07-01T01:04:57.730+00:00] patient: 
+[2026-07-01T01:04:57.909+00:00] receptionist: Just let me know what you need help with.
+[2026-07-01T01:04:59.519+00:00] patient: Thank you! If you'd like to schedule an appointment, need information about our providers, or have any other questions about Pivot Point Orthopaedics, just let me know—I'm happy to assist.
+[2026-07-01T01:05:12.471+00:00] receptionist: Understood.
+[2026-07-01T01:05:13.210+00:00] patient: 
+[2026-07-01T01:05:13.517+00:00] receptionist: 
+[2026-07-01T01:05:29.517+00:00] receptionist: If you have any specific requests
+[2026-07-01T01:05:30.375+00:00] patient: 
+[2026-07-01T01:05:30.614+00:00] receptionist: Sounds good.
+[2026-07-01T01:05:38.280+00:00] patient: 
+[2026-07-01T01:05:39.152+00:00] receptionist: You have any questions or need help with anything related to Pivot Point Orthopedics, just let me know.
+[2026-07-01T01:05:42.628+00:00] patient: Thank
+[2026-07-01T01:05:43.708+00:00] receptionist: Are you still there?
+[2026-07-01T01:05:52.118+00:00] patient: 
+[2026-07-01T01:05:52.116+00:00] receptionist: You're welcome.
+[2026-07-01T01:05:52.278+00:00] patient: 
+[2026-07-01T01:05:52.909+00:00] receptionist: If you need anything else, just let me know.
+[2026-07-01T01:05:54.158+00:00] patient: Thank you! If you have any other questions or need assistance in the future, feel free to reach out. Have a great day!
+[2026-07-01T01:06:04.451+00:00] receptionist: You Take care.

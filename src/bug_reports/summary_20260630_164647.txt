@@ -1,0 +1,177 @@
+# Receptionist System QA Report
+
+## Overall Summary
+The receptionist successfully completed a basic appointment-booking flow and provided useful visit logistics. However, there were several issues around professionalism, data collection, triage safety, provider-name consistency, and handling multi-part patient questions. The largest risks are booking an appointment without collecting required patient/contact information and failing to screen for urgent red flags when the caller described worsening acute knee pain.
+
+---
+
+## Issues & Suggested Fixes
+
+### 1. Confusing / Unprofessional Opening Flow
+- **Issue:** The opening was fragmented and confusing:
+  - “For quality and training purposes.”
+  - “Thanks for calling Pivot Point Orthopaedics.”
+  - “Part of Pretty Good AI.”
+  - “Am I speaking with Alex?”
+- **Why it matters:** The caller may not understand who they are speaking with, whether the call is recorded, or why they are being asked if they are Alex. The “Pretty Good AI” branding sounds informal and may reduce trust in a medical setting.
+- **Suggested fix:**
+  - Use a clear, standardized greeting:
+    - “Thank you for calling Pivot Point Orthopaedics. This call may be recorded for quality and training. My name is [Name], the virtual receptionist. How may I help you today?”
+  - Only ask “Am I speaking with Alex?” if there is a known caller record or callback context.
+
+---
+
+### 2. Appointment Was Booked Without Collecting Essential Patient Information
+- **Issue:** The receptionist only collected date of birth before booking. It did not collect or confirm:
+  - Patient full name
+  - Phone number
+  - Email
+  - Address
+  - New vs. existing patient status
+  - Reason for visit in a structured way
+  - Insurance member details
+- **Why it matters:** A real clinic generally cannot reliably book or confirm an appointment with only a date of birth. This could create duplicate records, wrong-patient scheduling, or failed confirmations.
+- **Suggested fix:**
+  - Before booking, collect and confirm minimum demographics:
+    - Full legal name
+    - Date of birth
+    - Callback number
+    - New/existing patient status
+    - Reason for visit
+  - If sending SMS, confirm the mobile number and obtain consent.
+
+---
+
+### 3. Acute Knee Pain Was Not Properly Triaged
+- **Issue:** The caller said the knee pain started suddenly yesterday and was getting worse, requesting same-day care. The receptionist simply offered next-day openings.
+- **Why it matters:** Sudden worsening knee pain can require escalation depending on symptoms such as trauma, inability to bear weight, severe swelling, fever, redness, numbness, shortness of breath, or signs of blood clot/infection.
+- **Suggested fix:**
+  - Add a safety triage script for acute orthopedic complaints:
+    - “Are you unable to bear weight?”
+    - “Was there an injury or fall?”
+    - “Is there severe swelling, redness, warmth, fever, numbness, or loss of circulation?”
+    - “Are you having chest pain or shortness of breath?”
+  - If red flags are present, advise urgent care/ER or route to clinical staff according to policy.
+  - If no red flags, proceed with scheduling.
+
+---
+
+### 4. Provider Name Was Inconsistent
+- **Issue:** The same provider’s name was rendered multiple ways:
+  - Dr. Zigniew Lakoski
+  - Dr. Likoski
+  - Dr. Lukoski
+  - Dr. Zibingyu Lukowski
+- **Why it matters:** This creates confusion and could result in booking with the wrong provider.
+- **Suggested fix:**
+  - Use a canonical provider directory with fixed names and IDs.
+  - Repeat back the exact provider name consistently.
+  - Confirm the final appointment with a clear recap:
+    - “You are scheduled with Dr. Zbigniew Lakowski on Wednesday, July 1 at 8:45 AM.”
+
+---
+
+### 5. Missed Follow-Up Question About Provider Specialty
+- **Issue:** The caller asked whether Dr. Lukoski had experience with sports injuries. The receptionist did not answer this question.
+- **Why it matters:** Patients often choose providers based on specialty. Ignoring the question can reduce confidence.
+- **Suggested fix:**
+  - If known, answer directly:
+    - “Yes, Dr. Lakowski treats sports-related knee injuries.”
+  - If unknown:
+    - “I don’t want to give you inaccurate information. I can have the clinic confirm that for you, or I can schedule you with a sports medicine specialist if available.”
+
+---
+
+### 6. Dr. Alex Huang Question Was Addressed Too Late
+- **Issue:** The patient asked early whether Dr. Alex Huang was accepting new patients. The receptionist only answered after booking with another doctor, saying Dr. Alex Huang was not listed as a provider.
+- **Why it matters:** The caller’s provider preference should be addressed before booking alternatives.
+- **Suggested fix:**
+  - Respond earlier:
+    - “I don’t see Dr. Alex Huang listed with our practice. I can offer appointments with Dr. Lakowski or Dr. Noble instead.”
+
+---
+
+### 7. Text Confirmation Flow Was Incomplete
+- **Issue:** The receptionist asked if the caller wanted a text confirmation. The caller said yes, but the receptionist never confirmed the phone number, obtained SMS consent, or said whether the confirmation was sent.
+- **Why it matters:** SMS communications in healthcare may require consent, and messages could go to the wrong number.
+- **Suggested fix:**
+  - Add a confirmation step:
+    - “I can send a text confirmation. Is the best mobile number [number]?”
+    - “Do I have your permission to send appointment information by text?”
+  - Then confirm:
+    - “Great, I’ve sent the confirmation to that number.”
+
+---
+
+### 8. Insurance Response Was Too Broad
+- **Issue:** The receptionist stated that the clinic accepts most insurance plans, including Blue Cross Blue Shield.
+- **Why it matters:** Accepting an insurance carrier does not guarantee the patient’s specific plan is in network or that the visit is covered.
+- **Suggested fix:**
+  - Use more precise language:
+    - “We do accept many Blue Cross Blue Shield plans, but coverage depends on your specific plan. Please bring your card, and we recommend confirming benefits with your insurer before the visit.”
+  - Optionally collect insurance details for verification.
+
+---
+
+### 9. Online Forms Handling Was Vague
+- **Issue:** The receptionist said it would follow up with clinic staff to confirm whether forms are available, but did not provide timing or explain how the patient would be contacted.
+- **Also noted:** The phrase “if all my forms are available for your appointment” was grammatically incorrect.
+- **Suggested fix:**
+  - Use a clear escalation message:
+    - “I’ll send a message to the clinic team to check whether online forms are available. They will contact you by phone or text within one business day.”
+  - Avoid “my forms”; use “your forms.”
+
+---
+
+### 10. Appointment Confirmation Lacked a Full Recap
+- **Issue:** The final appointment confirmation did not include all key details in one clean recap.
+- **Suggested fix:**
+  - Provide a complete recap:
+    - Patient name
+    - Date and time
+    - Provider
+    - Clinic address
+    - Arrival time
+    - Items to bring
+    - Cancellation policy
+    - Confirmation method
+
+---
+
+### 11. Cancellation Policy Was Vague
+- **Issue:** The receptionist said there “may be a fee” for late cancellations or missed appointments but did not provide the amount or clarify that it should be confirmed with the clinic.
+- **Suggested fix:**
+  - If the fee amount is known, provide it.
+  - If unknown, say:
+    - “There may be a fee, but I don’t have the exact amount. I can ask the clinic team to confirm.”
+
+---
+
+### 12. Language Quality and Grammar Issues
+- **Issue:** Several phrases sounded unnatural or incomplete:
+  - “Can I help you with today?”
+  - “You like to book one of these?”
+  - “Go if you have any other questions. Questions.”
+- **Why it matters:** Medical reception should sound polished and professional.
+- **Suggested fix:**
+  - Improve scripted language:
+    - “How can I help you today?”
+    - “Would you like to book one of these times?”
+    - “Let me know if you have any other questions.”
+
+---
+
+### 13. Clinic Name Spelling Was Inconsistent
+- **Issue:** The clinic name alternated between “Orthopaedics” and “Orthopedics.”
+- **Why it matters:** Inconsistent branding can confuse patients and reduce professionalism.
+- **Suggested fix:**
+  - Use the official spelling consistently throughout all scripts and confirmations.
+
+---
+
+## Recommended Priority Fixes
+1. **Collect full patient demographics and contact information before booking.**
+2. **Add urgent symptom triage for acute orthopedic complaints.**
+3. **Fix provider-name consistency using a structured provider database.**
+4. **Complete the SMS confirmation workflow with phone confirmation and consent.**
+5. **Improve handling of multi-part questions so no patient question is skipped.**

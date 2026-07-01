@@ -1,0 +1,246 @@
+# QA Report: Pivot Point Orthopaedics AI Receptionist
+
+## Summary
+
+The receptionist successfully completed the core scheduling flow: it identified the patient’s request, collected a date of birth, offered an appointment, booked it, provided preparation instructions, and handled a request for emailed forms. However, there were several issues around call opening, identity verification, provider-name consistency, data confirmation, grammar/naturalness, and handling of patient contact details.
+
+---
+
+## Issues & Recommendations
+
+### 1. Call Opening Was Fragmented and Unclear
+
+**Observed issue:**
+- The call began with incomplete fragments:
+  - “And training purposes.”
+  - “For calling Pivot Point Orthopaedics.”
+  - “Part of Pretty Good AI.”
+- This sounds like the beginning of a disclosure was cut off, likely intended to be something like: “This call may be recorded for quality and training purposes. Thank you for calling...”
+
+**Why it matters:**
+- Patients may be confused or concerned.
+- Recording/AI disclosure requirements may not be met if the message is incomplete.
+- The first impression feels unpolished.
+
+**Suggested fix:**
+- Ensure the greeting plays as one complete sentence before moving on:
+  - “Thank you for calling Pivot Point Orthopaedics. This call may be recorded for quality and training purposes. I’m an AI assistant helping the clinic. How can I help you today?”
+- Add safeguards so the call does not start mid-prompt.
+
+---
+
+### 2. Confusing Identity Question: “Am I speaking with Alex?”
+
+**Observed issue:**
+- The receptionist asked, “Am I speaking with Alex?” without context.
+- The patient then responded with a meta/test-script message, seemingly confused about whether the receptionist was named Alex or whether the caller was supposed to be Alex.
+
+**Why it matters:**
+- The question can be ambiguous.
+- If “Alex” is the patient’s name from caller ID or chart lookup, the assistant should make that clear.
+- If not handled carefully, it may create identity-verification problems.
+
+**Suggested fix:**
+- Rephrase to:
+  - “I have the caller listed as Alex. Is this Alex?”
+  - Or: “May I have your full name, please?”
+- If the system has a suspected patient identity, it should explain that it is verifying the caller.
+
+---
+
+### 3. Insufficient Patient Identity Verification
+
+**Observed issue:**
+- The receptionist only requested date of birth.
+- It did not confirm the patient’s full name, phone number, or other identifying details before scheduling.
+
+**Why it matters:**
+- Scheduling under the wrong patient record is a serious operational and privacy risk.
+- Date of birth alone is usually not enough to uniquely identify a patient.
+
+**Suggested fix:**
+- Collect and confirm at least:
+  - Full legal name
+  - Date of birth
+  - Phone number
+  - Possibly address or another identifier, depending on clinic policy
+- Example:
+  - “Can I confirm your full name and date of birth?”
+  - “What is the best phone number to reach you?”
+
+---
+
+### 4. Provider Name Was Inconsistent and Mispronounced
+
+**Observed issue:**
+- The appointment was first offered with “the Bignew Lukoski MD.”
+- The confirmation then said “Zebigniew Lakofsky, MD.”
+- These appear to refer to the same provider but with different names/pronunciations.
+
+**Why it matters:**
+- Patients may lose confidence if provider names change.
+- The patient may not know who they are scheduled with.
+- It can create real appointment confusion.
+
+**Suggested fix:**
+- Ensure provider names are pulled from a single canonical source.
+- Add phonetic pronunciation support for difficult names.
+- Use a clear format:
+  - “Dr. Zbigniew Lukoski”
+- Confirm the same exact provider name during offer and final booking.
+
+---
+
+### 5. Facility Name Inconsistency: “Orthopaedics” vs. “Orthopedics”
+
+**Observed issue:**
+- The opening used “Pivot Point Orthopaedics.”
+- The final confirmation used “Pivot Point Orthopedics.”
+
+**Why it matters:**
+- This looks unprofessional and may confuse patients.
+- It could indicate mismatched clinic metadata in the system.
+
+**Suggested fix:**
+- Standardize the clinic name across all prompts, confirmations, and backend records.
+
+---
+
+### 6. Appointment Confirmation Lacked Full Location Details
+
+**Observed issue:**
+- The assistant confirmed the date, time, provider, and clinic name, but did not provide the office address or location details.
+
+**Why it matters:**
+- If the clinic has multiple locations, this is a major gap.
+- Even with one location, patients often need address, parking, suite number, or arrival instructions.
+
+**Suggested fix:**
+- Include the appointment location in the final confirmation:
+  - “Your appointment is Monday, July 6 at 3:30 PM with Dr. Zbigniew Lukoski at our [address/location] office.”
+- If multiple locations exist, explicitly confirm the correct one before booking.
+
+---
+
+### 7. Email Address Was Not Confirmed or Spelled Back
+
+**Observed issue:**
+- The patient provided `test.patient@email.com`.
+- The receptionist immediately said it would ask the clinic to email the forms.
+- It did not repeat or verify the email address.
+
+**Why it matters:**
+- Email addresses are easy to mishear in voice interactions.
+- Sending forms or patient communications to the wrong email could create privacy issues.
+
+**Suggested fix:**
+- Always read back email addresses:
+  - “Just to confirm, that’s test dot patient at email dot com?”
+- Consider asking whether email communication is acceptable:
+  - “Is it okay for the clinic to send forms to that email address?”
+
+---
+
+### 8. The Assistant Claimed It Had Notified the Clinic Without Confirming Workflow
+
+**Observed issue:**
+- The assistant said, “I’ve let the clinic know to email you the forms before your appointment.”
+- It is unclear whether an actual task/message was created successfully.
+
+**Why it matters:**
+- If the backend task fails or is not integrated, the patient may expect forms that never arrive.
+- The wording implies completion.
+
+**Suggested fix:**
+- Only make definitive claims after backend confirmation.
+- If uncertain, say:
+  - “I’ll send a request to the clinic to email you the forms.”
+- If a task is created successfully:
+  - “I’ve sent that request to the clinic. They should follow up as soon as possible.”
+
+---
+
+### 9. Minor Grammar and Naturalness Issues
+
+**Observed issue:**
+- “If need forms in advance...” is grammatically incorrect.
+- “Would you like to book this time?” is understandable but slightly robotic.
+- “With the Bignew Lukoski MD” is unnatural.
+
+**Why it matters:**
+- Small language issues reduce patient trust.
+- Medical reception interactions should sound polished and professional.
+
+**Suggested fix:**
+- Update templates:
+  - “If you need forms in advance, I can ask the clinic to send them to you.”
+  - “Would you like me to schedule that appointment for you?”
+  - “With Dr. [Name].”
+
+---
+
+### 10. Did Not Fully Answer the Patient’s Preparation Question
+
+**Observed issue:**
+- The patient asked:
+  - “Is there anything else I should prepare before my appointment?”
+- The receptionist only said the clinic would follow up about forms, then asked if anything else was needed.
+- It did not provide additional preparation guidance beyond what it had already said.
+
+**Why it matters:**
+- The patient asked a direct question and expected a complete answer.
+- This was an opportunity to summarize key preparation items.
+
+**Suggested fix:**
+- Respond with a concise checklist:
+  - “Please bring your photo ID, insurance card, medication list, and any relevant imaging or medical records. Plan to arrive 15 minutes early if you have not completed forms in advance.”
+
+---
+
+### 11. No Insurance or Referral Intake
+
+**Observed issue:**
+- The receptionist did not ask about insurance, referral requirements, or whether the patient is new or established.
+
+**Why it matters:**
+- Orthopaedic visits often require insurance verification and sometimes referrals.
+- Missing this information can create administrative burden or appointment problems.
+
+**Suggested fix:**
+- Depending on clinic workflow, collect:
+  - Insurance provider
+  - Member ID or whether the card will be brought
+  - Referral status, if needed
+  - New vs. returning patient status
+- Example:
+  - “Will you be using insurance for this visit?”
+  - “Some plans require a referral. Do you know if your plan requires one?”
+
+---
+
+### 12. The System Handled Prompt-Injection-Like Patient Text Reasonably, But Could Be More Robust
+
+**Observed issue:**
+- The patient initially responded with a long meta message describing a test scenario.
+- The receptionist did not get fully derailed and continued with scheduling, which is positive.
+- However, it did not clarify the patient’s actual request before moving to date of birth.
+
+**Why it matters:**
+- In real calls, callers may say confusing or indirect things.
+- The assistant should distinguish between test-script text and actual patient intent.
+
+**Suggested fix:**
+- Add clarification behavior when the caller gives meta or ambiguous content:
+  - “It sounds like you’d like to schedule a knee consultation. Is that right?”
+- Only proceed to personal information collection after the caller confirms the intent.
+
+---
+
+## Overall Recommendations
+
+- Improve the opening prompt and disclosure reliability.
+- Strengthen patient identity verification before scheduling.
+- Standardize and validate provider and clinic names.
+- Confirm all critical data back to the patient, especially provider, date/time, location, and email address.
+- Add clearer workflows for forms, insurance, referrals, and first-visit preparation.
+- Polish grammar and conversational phrasing for a more professional patient experience.
